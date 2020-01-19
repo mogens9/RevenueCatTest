@@ -13,20 +13,42 @@ struct OfferingsView: View {
     @State var selectedIndex = 1
 
     var body: some View {
-        ZStack {
+        VStack {
+            Text("My App Prices")
+                .font(.largeTitle)
+                .bold()
             ForEach(offeringsViewModel.packages.indices, id: \.self) { index in
                 VStack {
                     HStack {
                         Text("Package \(index)")
                         Text("\(self.offeringsViewModel.packages[index].localizedPriceString)")
+
+                        Spacer()
                     }
                 }
+                .padding()
                 .background(self.checkSelection(index: index) ? Color.blue : Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .shadow(color: Color(.sRGBLinear, white: 0, opacity: 0.15), radius: 10, x: 0, y: 10)
+                .padding()
                 .onTapGesture {
                     self.selectedIndex = index
                 }
             }
+
+            Spacer()
+
+            // Buy Button
+            Button("Try Free & Subscribe") {
+                self.startTrial()
+            }
+            .padding()
+            .background(Color.blue)
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .foregroundColor(Color.white)
+            .font(Font.body.weight(.bold))
+            .animation(.spring())
+            .padding(.bottom)
         }
     }
 
@@ -36,6 +58,10 @@ struct OfferingsView: View {
         } else {
             return false
         }
+    }
+
+    func startTrial() {
+        self.offeringsViewModel.purchasePackage(package: offeringsViewModel.packages[selectedIndex])
     }
 }
 
